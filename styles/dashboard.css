@@ -2,6 +2,11 @@ body {
   font-size: .875rem;
 }
 
+canvas {
+  width: 100vh;
+  height: 100vh;
+}
+
 .feather {
   width: 16px;
   height: 16px;

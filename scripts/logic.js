@@ -67,6 +67,10 @@ class Queue {
 var canvas = new fabric.Canvas('myChart', {
     backgroundColor: 'rgb(232,242,232)',
 });
+
+// var canvas2 = new fabric.Canvas('myChart2', {
+//     backgroundColor: 'rgb(232,242,232)',
+// });
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 // fitToContainer();
 // function fitToContainer(){
