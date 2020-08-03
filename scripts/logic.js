@@ -67,10 +67,9 @@ class Queue {
 var canvas = new fabric.Canvas('myChart', {
     backgroundColor: 'rgb(232,242,232)',
 });
-
-
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
+// Global Variables
 var nodeSet = new Set();
 var edgeSet = new Set();
 var undo = new Stack();
@@ -83,7 +82,11 @@ var startPosY = 50;
 var nodeColor = '#fff';
 var edgeColor = "red";
 
+var edgeStartClicked = null;
+var edgeStartClickedSelected = false;
 
+var edgeEndClicked = null;
+var edgeEndClickedSelected = false;
 
 // Drawing and Object Construction Functions
 function makeNode() {
@@ -166,12 +169,6 @@ canvas.on('object:moving', function(e) {
     }
     canvas.renderAll();
 });
-
-var edgeStartClicked = null;
-var edgeStartClickedSelected = false;
-
-var edgeEndClicked = null;
-var edgeEndClickedSelected = false;
 
 canvas.on("mouse:dblclick", function(e) {
     if (e.target == null) {
@@ -363,6 +360,7 @@ drawEdgeInteractive.onclick = function() {
     console.log("Edges set:", edgeSet);
 }
 
+// Close Button for Add Edge Form
 closeEdgeButton.onclick = function() {
     document.getElementById("edgeFormDiv").style.display = "none";
 }
@@ -459,7 +457,9 @@ var algorithmSelectionButton = document.getElementById("algorithmSelection");
 var algorithm = document.getElementById("algorithm").value;
 
 algorithmSelectionButton.onclick = function() {
-
+    if (algorithm === "Breadth First Search") {
+        console.log("Choose start node.")
+    }
 }
 
 // BFS Section
@@ -472,59 +472,59 @@ algorithmSelectionButton.onclick = function() {
 
 // Under construction Do not venture below yet //
 // Constructing Graph from Text Representation
-constructFromText.onclick = function(){
-    document.getElementById("settingsFormDiv").style.display = "none";
-    document.getElementById("selfEdge").style.display = "none";
-    document.getElementById("duplicateEdge").style.display = "none";
-    var x = document.getElementById("formDiv");
-    document.getElementById("edgeFormDiv").style.display = "none";
+// constructFromText.onclick = function(){
+//     document.getElementById("settingsFormDiv").style.display = "none";
+//     document.getElementById("selfEdge").style.display = "none";
+//     document.getElementById("duplicateEdge").style.display = "none";
+//     var x = document.getElementById("formDiv");
+//     document.getElementById("edgeFormDiv").style.display = "none";
 
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
-}
-// Construction Graph from Text Representation
-var drawGraph = document.getElementById("drawGraph");
-var data = null;
-drawGraph.onclick = function() {
-    document.getElementById("formDiv").style.display = "none";
+//     if (x.style.display === "none") {
+//         x.style.display = "block";
+//     } else {
+//         x.style.display = "none";
+//     }
+// }
+// // Construction Graph from Text Representation
+// var drawGraph = document.getElementById("drawGraph");
+// var data = null;
+// drawGraph.onclick = function() {
+//     document.getElementById("formDiv").style.display = "none";
 
-    // Logic
-    var graphRepresentation;
-    if (document.getElementById("adjacencyList").checked) {
-        graphRepresentation = "adjacencyList";
-    } else if (document.getElementById("adjacencyMatrix").checked){
-        graphRepresentation = "adjacencyMatrix";
-    } else {
-        graphRepresentation = "edgeList"
-    }
+//     // Logic
+//     var graphRepresentation;
+//     if (document.getElementById("adjacencyList").checked) {
+//         graphRepresentation = "adjacencyList";
+//     } else if (document.getElementById("adjacencyMatrix").checked){
+//         graphRepresentation = "adjacencyMatrix";
+//     } else {
+//         graphRepresentation = "edgeList"
+//     }
 
-    data = document.getElementById("data").value;
+//     data = document.getElementById("data").value;
     
-    if (graphRepresentation == "adjacencyList") {
-        data = data.split("\n");
-        for (var i = 0; i < data.length; i++) {
-            parsed = [];
-            toParse = data[i].split(", ");
-            for (var j = 0; j < toParse.length; j++) {
-                parsed.push(+toParse[j]);
-            }
-            data[i] = parsed;
-        }
-        dataFormatted = data;
-    }
+//     if (graphRepresentation == "adjacencyList") {
+//         data = data.split("\n");
+//         for (var i = 0; i < data.length; i++) {
+//             parsed = [];
+//             toParse = data[i].split(", ");
+//             for (var j = 0; j < toParse.length; j++) {
+//                 parsed.push(+toParse[j]);
+//             }
+//             data[i] = parsed;
+//         }
+//         dataFormatted = data;
+//     }
     
 
-    drawGraph(dataFormatted, graphRepresentation)
-}
-/* Drawing Functions */
-function drawGraph(data, graphRepresentation) {
-    // On hold until I can figure out an algorithm to minimize crossing number.
-    // if (graphRepresentation == "adjacencyList") {
+//     drawGraph(dataFormatted, graphRepresentation)
+// }
+// /* Drawing Functions */
+// function drawGraph(data, graphRepresentation) {
+//     // On hold until I can figure out an algorithm to minimize crossing number.
+//     // if (graphRepresentation == "adjacencyList") {
         
-    // }
-}
+//     // }
+// }
 
 
