@@ -56,7 +56,12 @@
           <!-- Add Edges Form: Hidden -->
           <div id="edgeFormDiv" style="display:none">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-              <form>
+              <div class="col">
+                <h6>Simply double click the starting node and then double click the ending node and 
+                    an edge will be drawn between the selected nodes. If you choose this method there's no need to click "Add Edge". Click the "Close" button below to get started. You can also use the selection to the right to choose manually.</h6>
+                <button id="closeButton" type="button" class="btn btn-secondary">Close</button>
+              </div>
+              <form class="col">
                 <div class="form-group row">
                   <label for="startingNodeSelect" class="col-sm-5 col-form-label">Choose Start Node</label>
                   <div class="col-sm-5">
@@ -70,7 +75,7 @@
                     </select>
                   </div>
                 </div>
-                <button id="drawEdge" type="button" class="btn btn-outline-secondary">Draw Edge</button>
+                <button id="drawEdge" type="button" class="btn btn-secondary">Draw Edge</button>
                 <label id="selfEdge" style="display:none">Error: Self Edges Not Allowed</label>
                 <label id="duplicateEdge" style="display:none">Error: Duplicate Edges Not Allowed</label>
               </form>

@@ -68,20 +68,9 @@ var canvas = new fabric.Canvas('myChart', {
     backgroundColor: 'rgb(232,242,232)',
 });
 
-// var canvas2 = new fabric.Canvas('myChart2', {
-//     backgroundColor: 'rgb(232,242,232)',
-// });
+
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
-// fitToContainer();
-// function fitToContainer(){
-//     let c = document.getElementById("myChart");
-//     // Make it visually fill the positioned parent
-//     c.style.width ='100%';
-//     c.style.height='100%';
-//     // ...then set the internal size to match
-//     c.width  = c.offsetWidth;
-//     c.height = c.offsetHeight;
-// }
+
 var nodeSet = new Set();
 var edgeSet = new Set();
 var undo = new Stack();
@@ -93,6 +82,8 @@ var startPosX = 50;
 var startPosY = 50;
 var nodeColor = '#fff';
 var edgeColor = "red";
+
+
 
 // Drawing and Object Construction Functions
 function makeNode() {
@@ -176,6 +167,69 @@ canvas.on('object:moving', function(e) {
     canvas.renderAll();
 });
 
+var edgeStartClicked = null;
+var edgeStartClickedSelected = false;
+
+var edgeEndClicked = null;
+var edgeEndClickedSelected = false;
+
+canvas.on("mouse:dblclick", function(e) {
+    if (e.target == null) {
+        return;
+    }
+    var p = e.target;
+    console.log("Selected:", p);
+
+    if (!edgeStartClickedSelected) {
+        edgeStartClicked = p;
+        edgeStartClickedSelected = true;
+    } else if (!edgeEndClickedSelected && edgeStartClickedSelected) {
+        edgeEndClicked = p;
+        edgeEndClickedSelected = true;
+    }
+    if (edgeStartClickedSelected && edgeEndClickedSelected) {
+        edgeStartClickedSelected = false;
+        edgeEndClickedSelected = false;
+
+        var startingNodeIndex = edgeStartClicked.number;
+        var endingNodeIndex = edgeEndClicked.number;
+
+        if (startingNodeIndex == endingNodeIndex) {
+            console.log("no self edges");
+            return;
+        }
+    
+        var startingNode = null;
+        var endingNode = null;
+    
+        for (let item of nodeSet.keys()) {
+            if (item.number.toString() == startingNodeIndex) {
+                startingNode = item;
+            }
+            if (item.number.toString() == endingNodeIndex) {
+                endingNode = item;
+            }
+        }
+        
+        for (let item of edgeSet.keys()) {
+            if ((item.startingNode.number == parseInt(startingNodeIndex, 10) && item.endingNode.number == parseInt(endingNodeIndex, 10)) || (item.endingNode.number == parseInt(startingNodeIndex, 10) && item.startingNode.number == parseInt(endingNodeIndex, 10)))  {
+                console.log("no duplicate edges");
+                return;
+            }
+        }
+        
+        
+        var edge = makeLine(startingNode, endingNode);
+        edgeSet.add(edge)
+        canvas.add(edge);
+        undo.push(edge);
+        redo.clear();
+        edge.sendToBack();
+        edgeStartClicked.adjacentEdgesLeaving.push(edge);
+        edgeEndClicked.adjacentEdgesArriving.push(edge);
+    }
+})
+
 // Button clicking
 var constructFromText = document.getElementById("fromText");
 var addAndDrawNodeInteractive = document.getElementById("addNode");
@@ -185,6 +239,7 @@ var settingsButton = document.getElementById("settings");
 var changeSettingsButton = document.getElementById("updateSettings");
 var undoButton = document.getElementById("undoButton");
 var redoButton = document.getElementById("redoButton");
+var closeEdgeButton = document.getElementById("closeButton");
 
 // Adding and Drawing Nodes
 addAndDrawNodeInteractive.onclick = function() {
@@ -306,6 +361,10 @@ drawEdgeInteractive.onclick = function() {
     console.log("Redo:", redo)
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
+}
+
+closeEdgeButton.onclick = function() {
+    document.getElementById("edgeFormDiv").style.display = "none";
 }
 // Settings
 settingsButton.onclick = function() {
