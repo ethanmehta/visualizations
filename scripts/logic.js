@@ -453,14 +453,30 @@ redoButton.onclick = function() {
 
 
 // Algorithms Section
-var algorithmSelectionButton = document.getElementById("algorithmSelection");
-var algorithm = document.getElementById("algorithm").value;
-
-algorithmSelectionButton.onclick = function() {
-    if (algorithm === "Breadth First Search") {
-        console.log("Choose start node.")
-    }
+var doneDrawing = document.getElementById("doneDrawing");
+var backToDrawing = document.getElementById("backToDrawing");
+doneDrawing.onclick = function() {
+    var x = document.getElementById("algorithmToolbar");
+    var y = document.getElementById("drawingToolbar");
+    x.style.display="block";
+    y.style.display="none";
 }
+
+backToDrawing.onclick = function() {
+    var x = document.getElementById("algorithmToolbar");
+    var y = document.getElementById("drawingToolbar");
+    x.style.display="none";
+    y.style.display="block";
+}
+
+// var algorithmSelectionButton = document.getElementById("algorithmSelection");
+// var algorithm = document.getElementById("algorithm").value;
+
+// algorithmSelectionButton.onclick = function() {
+//     if (algorithm === "Breadth First Search") {
+//         console.log("Choose start node.")
+//     }
+// }
 
 // BFS Section
 
