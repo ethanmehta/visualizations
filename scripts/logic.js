@@ -458,18 +458,43 @@ redoButton.onclick = function() {
 var doneDrawing = document.getElementById("doneDrawing");
 var backToDrawing = document.getElementById("backToDrawing");
 doneDrawing.onclick = function() {
-    var x = document.getElementById("algorithmToolbar");
+    var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("drawingToolbar");
     algorithmMode = true;
     x.style.display="block";
     y.style.display="none";
 }
 backToDrawing.onclick = function() {
-    var x = document.getElementById("algorithmToolbar");
+    var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("drawingToolbar");
     algorithmMode = false;
     x.style.display="none";
     y.style.display="block";
+}
+var runAlgorithm = document.getElementById("runAlgorithm");
+var backToChooseAlgorithm = document.getElementById("backToChooseAlgorithm");
+
+runAlgorithm.onclick = function() {
+    var x = document.getElementById("bfsToolbar")
+    var y = document.getElementById("chooseAlgorithmToolbar");
+    var algorithmChoosed = document.getElementById("chooseAlgorithm").value;
+    console.log(algorithmChoosed);
+    if (algorithmChoosed == "Breadth First Search") {
+        console.log("Yay BFS!");
+
+        x.style.display="block";
+        y.style.display="none";
+    } else {
+        console.log("Please select an algorithm");
+    }
+    
+}
+
+backToChooseAlgorithm.onclick = function() {
+    var x = document.getElementById("chooseAlgorithmToolbar");
+    var y = document.getElementById("bfsToolbar");
+    x.style.display="block";
+    y.style.display="none";
 }
 
 

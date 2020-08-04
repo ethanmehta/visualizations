@@ -57,7 +57,7 @@
           </div>
 
           <!-- Primary Button Toolbar for Choosing Algorithm -->
-          <div id="algorithmToolbar" class="btn-toolbar mb-2 mb-md-0 align-items-center pb-2 mb-3 border-bottom" style="display: none;">
+          <div id="chooseAlgorithmToolbar" class="btn-toolbar mb-2 mb-md-0 align-items-center pb-2 mb-3 border-bottom" style="display: none">
             <div class="btn-group mr-2">
               <form>     
                 <select id="chooseAlgorithm" class="form-control">
@@ -69,7 +69,7 @@
             </div>
 
             <div class="btn-group mr-2">
-              <button id="runAlgorithm" type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Start the execution of the algorithm.">Start</button>
+              <button id="runAlgorithm" type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Start the execution of the algorithm. Please select an algorithm to run if you haven't yet.">Start</button>
             </div>
             <div class="btn-group mr-2">
               <button id="backToDrawing" type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Go back to the drawing dashboard.">Back</button>
@@ -77,7 +77,7 @@
           </div>
 
           <!--BFS, DFS Algorithm Toolbar-->
-          <div id="bfsdfsToolbar" class="btn-toolbar mb-2 mb-md-0 align-items-center pb-2 mb-3 border-bottom" style="display: none">
+          <div id="bfsToolbar" class="btn-toolbar mb-2 mb-md-0 align-items-center pb-2 mb-3 border-bottom" style="display: none">
             <div class="btn-group mr-2">
               <form>     
                 <select id="chooseStartingNode" class="form-control">
@@ -87,10 +87,13 @@
             </div>
 
             <div class="btn-group mr-2">
-              <button id="runAlgorithm" type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" class="btn btn-success" title="Start the execution of the algorithm.">Start</button>
+              <button id="stepForward" type="button" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" class="btn btn-info" title="Step forward one step in the execution of the algorithm.">Step Forward</button>
             </div>
             <div class="btn-group mr-2">
-              <button id="backToDrawing" type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" class="btn btn-success" title="Go back to the drawing dashboard.">Back</button>
+              <button id="stepBackward" type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" class="btn btn-info" title="Step backward one step in the execution of the algorithm.">Step Backward</button>
+            </div>
+            <div class="btn-group mr-2">
+              <button id="backToChooseAlgorithm" type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" class="btn btn-info" title="Choose another algorithm.">Back</button>
             </div>
           </div>
 
