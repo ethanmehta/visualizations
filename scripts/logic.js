@@ -63,10 +63,14 @@ class Queue {
 
 }
 
-// Canvas Stuffs
-var canvas = new fabric.Canvas('myChart', {
+// graphC Stuffs
+var graphCanvas = new fabric.Canvas('myChart', {
     backgroundColor: 'rgb(232,242,232)',
 });
+var dataCanvas = new fabric.Canvas('myChart2', {
+    backgroundColor: 'rgb(184, 233, 237)',
+});
+
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
 // Global Variables
@@ -81,6 +85,7 @@ var startPosX = 50;
 var startPosY = 50;
 var nodeColor = '#fff';
 var edgeColor = "red";
+var algorithmMode = false;
 
 var edgeStartClicked = null;
 var edgeStartClickedSelected = false;
@@ -117,7 +122,7 @@ function makeNode() {
 
     startPosX += 5;
     startPosY += 5;
-    if (startPosY > canvas.height) {
+    if (startPosY > graphCanvas.height) {
         startPosX = 55;
         startPosY = 50;
     }
@@ -157,7 +162,7 @@ function changeEdgeColor(edge, color) {
         'fill': color
     });
 }
-canvas.on('object:moving', function(e) {
+graphCanvas.on('object:moving', function(e) {
     var p = e.target;
     for (var i = 0; i < p.adjacentEdgesLeaving.length; i++) {
         p.adjacentEdgesLeaving[i].set({ 'x1': p.left, 'y1': p.top });
@@ -167,63 +172,61 @@ canvas.on('object:moving', function(e) {
         p.adjacentEdgesArriving[i].set({'x2': p.left, 'y2': p.top });
         p.adjacentEdgesArriving[i].sendToBack();
     }
-    canvas.renderAll();
+    graphCanvas.renderAll();
 });
 
-canvas.on("mouse:dblclick", function(e) {
+graphCanvas.on("mouse:dblclick", function(e) {
     if (e.target == null) {
         return;
     }
     var p = e.target;
-    console.log("Selected:", p);
-
-    if (!edgeStartClickedSelected) {
-        edgeStartClicked = p;
-        edgeStartClickedSelected = true;
-    } else if (!edgeEndClickedSelected && edgeStartClickedSelected) {
-        edgeEndClicked = p;
-        edgeEndClickedSelected = true;
-    }
-    if (edgeStartClickedSelected && edgeEndClickedSelected) {
-        edgeStartClickedSelected = false;
-        edgeEndClickedSelected = false;
-
-        var startingNodeIndex = edgeStartClicked.number;
-        var endingNodeIndex = edgeEndClicked.number;
-
-        if (startingNodeIndex == endingNodeIndex) {
-            console.log("no self edges");
-            return;
+    if (!algorithmMode) {
+        console.log("Selected:", p);
+        if (!edgeStartClickedSelected) {
+            edgeStartClicked = p;
+            edgeStartClickedSelected = true;
+        } else if (!edgeEndClickedSelected && edgeStartClickedSelected) {
+            edgeEndClicked = p;
+            edgeEndClickedSelected = true;
         }
-    
-        var startingNode = null;
-        var endingNode = null;
-    
-        for (let item of nodeSet.keys()) {
-            if (item.number.toString() == startingNodeIndex) {
-                startingNode = item;
-            }
-            if (item.number.toString() == endingNodeIndex) {
-                endingNode = item;
-            }
-        }
-        
-        for (let item of edgeSet.keys()) {
-            if ((item.startingNode.number == parseInt(startingNodeIndex, 10) && item.endingNode.number == parseInt(endingNodeIndex, 10)) || (item.endingNode.number == parseInt(startingNodeIndex, 10) && item.startingNode.number == parseInt(endingNodeIndex, 10)))  {
-                console.log("no duplicate edges");
+        if (edgeStartClickedSelected && edgeEndClickedSelected) {
+            edgeStartClickedSelected = false;
+            edgeEndClickedSelected = false;
+
+            var startingNodeIndex = edgeStartClicked.number;
+            var endingNodeIndex = edgeEndClicked.number;
+
+            if (startingNodeIndex == endingNodeIndex) {
+                console.log("no self edges");
                 return;
             }
+            var startingNode = null;
+            var endingNode = null;
+            for (let item of nodeSet.keys()) {
+                if (item.number.toString() == startingNodeIndex) {
+                    startingNode = item;
+                }
+                if (item.number.toString() == endingNodeIndex) {
+                    endingNode = item;
+                }
+            }
+            for (let item of edgeSet.keys()) {
+                if ((item.startingNode.number == parseInt(startingNodeIndex, 10) && item.endingNode.number == parseInt(endingNodeIndex, 10)) || (item.endingNode.number == parseInt(startingNodeIndex, 10) && item.startingNode.number == parseInt(endingNodeIndex, 10)))  {
+                    console.log("no duplicate edges");
+                    return;
+                }
+            }
+            var edge = makeLine(startingNode, endingNode);
+            edgeSet.add(edge)
+            graphCanvas.add(edge);
+            undo.push(edge);
+            redo.clear();
+            edge.sendToBack();
+            edgeStartClicked.adjacentEdgesLeaving.push(edge);
+            edgeEndClicked.adjacentEdgesArriving.push(edge);
         }
-        
-        
-        var edge = makeLine(startingNode, endingNode);
-        edgeSet.add(edge)
-        canvas.add(edge);
-        undo.push(edge);
-        redo.clear();
-        edge.sendToBack();
-        edgeStartClicked.adjacentEdgesLeaving.push(edge);
-        edgeEndClicked.adjacentEdgesArriving.push(edge);
+    } else {
+        console.log("Algorithm Mode");
     }
 })
 
@@ -246,7 +249,7 @@ addAndDrawNodeInteractive.onclick = function() {
     document.getElementById("edgeFormDiv").style.display = "none";
     document.getElementById("formDiv").style.display = "none";
     var node = makeNode();
-    canvas.add(node);
+    graphCanvas.add(node);
 
     nodeSet.add(node);
     undo.push(node);
@@ -342,7 +345,7 @@ drawEdgeInteractive.onclick = function() {
     
     var edge = makeLine(startingNode, endingNode);
     edgeSet.add(edge)
-    canvas.add(edge);
+    graphCanvas.add(edge);
     edge.sendToBack();
     startingNode.adjacentEdgesLeaving.push(edge);
     endingNode.adjacentEdgesArriving.push(edge);
@@ -392,7 +395,7 @@ changeSettingsButton.onclick = function() {
     for(let edge of edgeSet){
         changeEdgeColor(edge, edgeColor);
     }
-    canvas.renderAll();
+    graphCanvas.renderAll();
     
     document.getElementById("settingsFormDiv").style.display = "none";
 }
@@ -415,7 +418,7 @@ undoButton.onclick = function() {
         edgeId -= 1;
     }
       
-    canvas.remove(object);
+    graphCanvas.remove(object);
     console.log("Undo:", undo)
     console.log("Redo:", redo)
     console.log("Nodes set:", nodeSet);
@@ -435,11 +438,11 @@ redoButton.onclick = function() {
     
     if (object.number != null) {
         nodeSet.add(object);
-        canvas.add(object);
+        graphCanvas.add(object);
         nodeId += 1;
     } else {
         edgeSet.add(object);
-        canvas.add(object);
+        graphCanvas.add(object);
         object.sendToBack();
         edgeId += 1;
     }
@@ -451,34 +454,25 @@ redoButton.onclick = function() {
     console.log("Edges set:", edgeSet);
 }
 
-
 // Algorithms Section
 var doneDrawing = document.getElementById("doneDrawing");
 var backToDrawing = document.getElementById("backToDrawing");
 doneDrawing.onclick = function() {
     var x = document.getElementById("algorithmToolbar");
     var y = document.getElementById("drawingToolbar");
+    algorithmMode = true;
     x.style.display="block";
     y.style.display="none";
 }
-
 backToDrawing.onclick = function() {
     var x = document.getElementById("algorithmToolbar");
     var y = document.getElementById("drawingToolbar");
+    algorithmMode = false;
     x.style.display="none";
     y.style.display="block";
 }
 
-// var algorithmSelectionButton = document.getElementById("algorithmSelection");
-// var algorithm = document.getElementById("algorithm").value;
 
-// algorithmSelectionButton.onclick = function() {
-//     if (algorithm === "Breadth First Search") {
-//         console.log("Choose start node.")
-//     }
-// }
-
-// BFS Section
 
 
 
