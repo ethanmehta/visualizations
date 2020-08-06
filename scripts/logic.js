@@ -62,11 +62,79 @@ class Queue {
     }
 
 }
+class Graph {
+    constructor(nodes, edges) {
+        this.nodes = nodes;
+        this.edges = edges;
+        this.adjacencyList = {};
+        this.createAdjacencyList();
+    }
 
-// graphC Stuffs
+    getNodes() {
+        return this.nodes;
+    }
+
+    getEdges() {
+        return this.edges;
+    }
+
+    getNodeByNumber(nodeNumber) {
+        for (let i of this.nodes) {
+            if (i.number == nodeNumber) {
+                return i;
+            }
+        } 
+        return null;
+    }
+
+    adj(nodeNumber) {
+        if (this.adjacencyList[nodeNumber] != undefined) {
+            return this.adjacencyList[nodeNumber];
+        }
+    }
+
+    createAdjacencyList() {
+        for( let node of this.nodes) {
+            let adjacentNodes = [];
+            for (let edge of this.edges) {
+                if (node.number == edge.startingNode.number) {
+                    adjacentNodes.push(edge.endingNode);
+                } else if (node.number == edge.endingNode.number) {
+                    adjacentNodes.push(edge.startingNode);
+                }
+            }
+            this.adjacencyList[node.number] = adjacentNodes;
+        } 
+    }
+
+    printEdgeList() {
+        for (let i of this.edges) {
+            console.log(i.startingNode.number, i.endingNode.number);
+        }
+    }
+
+    printNodes() {
+        for (let i of this.nodes) {
+            console.log(i.number);
+        }
+    }
+
+    printAdjacencyList() {
+        for (let node in this.adjacencyList) {
+            let printArray = [];
+            for (let adjacentNode of this.adjacencyList[node]) {
+                printArray.push(adjacentNode.number);
+            }
+            console.log(node, printArray);
+        }
+    }
+}
+
+// graphCanvas Stuffs
 var graphCanvas = new fabric.Canvas('myChart', {
     backgroundColor: 'rgb(232,242,232)',
 });
+// dataCanvas Stuffs
 var dataCanvas = new fabric.Canvas('myChart2', {
     backgroundColor: 'rgb(184, 233, 237)',
 });
@@ -86,10 +154,8 @@ var startPosY = 50;
 var nodeColor = '#fff';
 var edgeColor = "red";
 var algorithmMode = false;
-
 var edgeStartClicked = null;
 var edgeStartClickedSelected = false;
-
 var edgeEndClicked = null;
 var edgeEndClickedSelected = false;
 
@@ -174,7 +240,6 @@ graphCanvas.on('object:moving', function(e) {
     }
     graphCanvas.renderAll();
 });
-
 graphCanvas.on("mouse:dblclick", function(e) {
     if (e.target == null) {
         return;
@@ -362,7 +427,6 @@ drawEdgeInteractive.onclick = function() {
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
-
 // Close Button for Add Edge Form
 closeEdgeButton.onclick = function() {
     document.getElementById("edgeFormDiv").style.display = "none";
@@ -453,14 +517,17 @@ redoButton.onclick = function() {
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
-
-// Algorithms Section
+// Choose Algorithms Section
 var doneDrawing = document.getElementById("doneDrawing");
 var backToDrawing = document.getElementById("backToDrawing");
+var runAlgorithm = document.getElementById("runAlgorithm");
+var backToChooseAlgorithm = document.getElementById("backToChooseAlgorithm");
+var graph = null;
 doneDrawing.onclick = function() {
     var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("drawingToolbar");
     algorithmMode = true;
+    graph = new Graph(nodeSet, edgeSet);
     x.style.display="block";
     y.style.display="none";
 }
@@ -471,18 +538,13 @@ backToDrawing.onclick = function() {
     x.style.display="none";
     y.style.display="block";
 }
-var runAlgorithm = document.getElementById("runAlgorithm");
-var backToChooseAlgorithm = document.getElementById("backToChooseAlgorithm");
-
 runAlgorithm.onclick = function() {
-    var x = document.getElementById("bfsToolbar")
     var y = document.getElementById("chooseAlgorithmToolbar");
     var algorithmChoosed = document.getElementById("chooseAlgorithm").value;
     console.log(algorithmChoosed);
     if (algorithmChoosed == "Breadth First Search") {
-        console.log("Yay BFS!");
 
-        x.style.display="block";
+        document.getElementById("bfsToolbar").style.display="block";
         y.style.display="none";
     } else {
         console.log("Please select an algorithm");
@@ -490,6 +552,7 @@ runAlgorithm.onclick = function() {
     
 }
 
+// BFS Section
 backToChooseAlgorithm.onclick = function() {
     var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("bfsToolbar");
@@ -498,68 +561,13 @@ backToChooseAlgorithm.onclick = function() {
 }
 
 
+// Utility Functions
 
+// Convert edgeSet and nodeSet to Graph object
+// G.nodes --> Set of nodes
+// G.edges --> Set of edges
+// G.adj --> G.adj(0) --> Every node, node 0 is adjacent to 
+// G.degree --> length of G.adj 
+function convertToGraph(setOfEdges, setOfNodes) {
 
-
-
-
-
-
-// Under construction Do not venture below yet //
-// Constructing Graph from Text Representation
-// constructFromText.onclick = function(){
-//     document.getElementById("settingsFormDiv").style.display = "none";
-//     document.getElementById("selfEdge").style.display = "none";
-//     document.getElementById("duplicateEdge").style.display = "none";
-//     var x = document.getElementById("formDiv");
-//     document.getElementById("edgeFormDiv").style.display = "none";
-
-//     if (x.style.display === "none") {
-//         x.style.display = "block";
-//     } else {
-//         x.style.display = "none";
-//     }
-// }
-// // Construction Graph from Text Representation
-// var drawGraph = document.getElementById("drawGraph");
-// var data = null;
-// drawGraph.onclick = function() {
-//     document.getElementById("formDiv").style.display = "none";
-
-//     // Logic
-//     var graphRepresentation;
-//     if (document.getElementById("adjacencyList").checked) {
-//         graphRepresentation = "adjacencyList";
-//     } else if (document.getElementById("adjacencyMatrix").checked){
-//         graphRepresentation = "adjacencyMatrix";
-//     } else {
-//         graphRepresentation = "edgeList"
-//     }
-
-//     data = document.getElementById("data").value;
-    
-//     if (graphRepresentation == "adjacencyList") {
-//         data = data.split("\n");
-//         for (var i = 0; i < data.length; i++) {
-//             parsed = [];
-//             toParse = data[i].split(", ");
-//             for (var j = 0; j < toParse.length; j++) {
-//                 parsed.push(+toParse[j]);
-//             }
-//             data[i] = parsed;
-//         }
-//         dataFormatted = data;
-//     }
-    
-
-//     drawGraph(dataFormatted, graphRepresentation)
-// }
-// /* Drawing Functions */
-// function drawGraph(data, graphRepresentation) {
-//     // On hold until I can figure out an algorithm to minimize crossing number.
-//     // if (graphRepresentation == "adjacencyList") {
-        
-//     // }
-// }
-
-
+}
