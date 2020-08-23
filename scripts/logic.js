@@ -1,135 +1,3 @@
-// Necessary DataStructures
-class Stack {
-    constructor(){
-        this.data = [];
-        this.first = 0;
-    }
-
-    push(element) {
-        this.data[this.first] = element;
-        this.first = this.first + 1;
-    }
-
-    length() {
-        return this.first;
-    }
-
-    peek() {
-        return this.data[this.first - 1];
-    }
-
-    isEmpty() {
-        return this.first === 0;
-    }
-
-    pop() {
-        if(!this.isEmpty()) {
-           this.first = this.first - 1;
-           return this.data.pop(); 
-        }
-    }
-
-    clear() {
-        this.data = [];
-        this.first = 0;
-    }
-}
-class Queue {
-    constructor() {
-        this.data = [];
-    }
-
-    enqueue(element) {
-        this.data.push(element);
-    }
-
-    dequeue() {
-        return this.data.shift();
-    }
-
-    isEmpty() {
-        return (this.data.length === 0);
-    }
-
-    peek() {
-        if(!this.isEmpty()) {
-            return this.data[0];
-        }
-    }
-
-    clear() {
-        this.data = [];
-    }
-
-}
-class Graph {
-    constructor(nodes, edges) {
-        this.nodes = nodes;
-        this.edges = edges;
-        this.adjacencyList = {};
-        this.createAdjacencyList();
-    }
-
-    getNodes() {
-        return this.nodes;
-    }
-
-    getEdges() {
-        return this.edges;
-    }
-
-    getNodeByNumber(nodeNumber) {
-        for (let i of this.nodes) {
-            if (i.number == nodeNumber) {
-                return i;
-            }
-        } 
-        return null;
-    }
-
-    adj(nodeNumber) {
-        if (this.adjacencyList[nodeNumber] != undefined) {
-            return this.adjacencyList[nodeNumber];
-        }
-    }
-
-    createAdjacencyList() {
-        for( let node of this.nodes) {
-            let adjacentNodes = [];
-            for (let edge of this.edges) {
-                if (node.number == edge.startingNode.number) {
-                    adjacentNodes.push(edge.endingNode);
-                } else if (node.number == edge.endingNode.number) {
-                    adjacentNodes.push(edge.startingNode);
-                }
-            }
-            this.adjacencyList[node.number] = adjacentNodes;
-        } 
-    }
-
-    printEdgeList() {
-        for (let i of this.edges) {
-            console.log(i.startingNode.number, i.endingNode.number);
-        }
-    }
-
-    printNodes() {
-        for (let i of this.nodes) {
-            console.log(i.number);
-        }
-    }
-
-    printAdjacencyList() {
-        for (let node in this.adjacencyList) {
-            let printArray = [];
-            for (let adjacentNode of this.adjacencyList[node]) {
-                printArray.push(adjacentNode.number);
-            }
-            console.log(node, printArray);
-        }
-    }
-}
-
 // graphCanvas Stuffs
 var graphCanvas = new fabric.Canvas('myChart', {
     backgroundColor: 'rgb(232,242,232)',
@@ -141,7 +9,6 @@ var dataCanvas = new fabric.Canvas('myChart2', {
 
 fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
-// Global Variables
 var nodeSet = new Set();
 var edgeSet = new Set();
 var undo = new Stack();
@@ -296,15 +163,15 @@ graphCanvas.on("mouse:dblclick", function(e) {
 })
 
 // Button clicking
-var constructFromText = document.getElementById("fromText");
-var addAndDrawNodeInteractive = document.getElementById("addNode");
-var addEdgeInteractive = document.getElementById("addEdge");
-var drawEdgeInteractive = document.getElementById("drawEdge");
-var settingsButton = document.getElementById("settings");
-var changeSettingsButton = document.getElementById("updateSettings");
-var undoButton = document.getElementById("undoButton");
-var redoButton = document.getElementById("redoButton");
-var closeEdgeButton = document.getElementById("closeButton");
+const constructFromText = document.getElementById("fromText");
+const addAndDrawNodeInteractive = document.getElementById("addNode");
+const addEdgeInteractive = document.getElementById("addEdge");
+const drawEdgeInteractive = document.getElementById("drawEdge");
+const settingsButton = document.getElementById("settings");
+const changeSettingsButton = document.getElementById("updateSettings");
+const undoButton = document.getElementById("undoButton");
+const redoButton = document.getElementById("redoButton");
+const closeEdgeButton = document.getElementById("closeButton");
 
 // Adding and Drawing Nodes
 addAndDrawNodeInteractive.onclick = function() {
@@ -324,6 +191,7 @@ addAndDrawNodeInteractive.onclick = function() {
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
+
 // Adding Edges
 addEdgeInteractive.onclick = function() {
     document.getElementById("settingsFormDiv").style.display = "none";
@@ -340,16 +208,16 @@ addEdgeInteractive.onclick = function() {
 
     var selectStartingNode = document.getElementById("startingNodeSelect");
     var startingOptions = [];
-    for (var j = 0; j < nodeSet.size; j++) {
+    for (let j = 0; j < nodeSet.size; j++) {
         startingOptions.push(j);
     }
     while(selectStartingNode.options.length) {
         selectStartingNode.options.remove(0);
     }
     
-    for (var i = 0; i < startingOptions.length; i++) {
-        var opt = startingOptions[i];
-        var el = document.createElement("option");
+    for (let i = 0; i < startingOptions.length; i++) {
+        let opt = startingOptions[i];
+        let el = document.createElement("option");
         el.textContent = opt;
         el.value = opt;
         selectStartingNode.appendChild(el);
@@ -358,15 +226,15 @@ addEdgeInteractive.onclick = function() {
     var selectEndingNode = document.getElementById("endingNodeSelect");
     var endingOptions = [];
 
-    for (var j = 0; j < nodeSet.size; j++) {
+    for (let j = 0; j < nodeSet.size; j++) {
         endingOptions.push(j)
     }
     while(selectEndingNode.options.length) {
         selectEndingNode.options.remove(0);
     }
-    for (var i = 0; i < endingOptions.length; i++) {
-        var opt = endingOptions[i];
-        var el = document.createElement("option");
+    for (let i = 0; i < endingOptions.length; i++) {
+        let opt = endingOptions[i];
+        let el = document.createElement("option");
         el.textContent = opt;
         el.value = opt;
         selectEndingNode.appendChild(el);
@@ -376,6 +244,7 @@ addEdgeInteractive.onclick = function() {
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
+
 // Drawing Edges
 drawEdgeInteractive.onclick = function() {
     document.getElementById("settingsFormDiv").style.display = "none";
@@ -407,7 +276,6 @@ drawEdgeInteractive.onclick = function() {
         }
     }
     
-    
     var edge = makeLine(startingNode, endingNode);
     edgeSet.add(edge)
     graphCanvas.add(edge);
@@ -427,11 +295,13 @@ drawEdgeInteractive.onclick = function() {
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
+
 // Close Button for Add Edge Form
 closeEdgeButton.onclick = function() {
     document.getElementById("edgeFormDiv").style.display = "none";
 }
-// Settings
+
+// Settings Button
 settingsButton.onclick = function() {
     document.getElementById("selfEdge").style.display = "none";
     document.getElementById("duplicateEdge").style.display = "none";
@@ -443,6 +313,8 @@ settingsButton.onclick = function() {
         x.style.display = "none";
     }
 }
+
+// Change Settings Button
 changeSettingsButton.onclick = function() {
     document.getElementById("selfEdge").style.display = "none";
     document.getElementById("duplicateEdge").style.display = "none";
@@ -463,6 +335,7 @@ changeSettingsButton.onclick = function() {
     
     document.getElementById("settingsFormDiv").style.display = "none";
 }
+
 // Undo Option
 undoButton.onclick = function() {
     document.getElementById("settingsFormDiv").style.display = "none";
@@ -488,6 +361,7 @@ undoButton.onclick = function() {
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
+
 // Redo Option
 redoButton.onclick = function() {
     document.getElementById("settingsFormDiv").style.display = "none";
@@ -511,18 +385,19 @@ redoButton.onclick = function() {
         edgeId += 1;
     }
     
-
     console.log("Undo:", undo)
     console.log("Redo:", redo)
     console.log("Nodes set:", nodeSet);
     console.log("Edges set:", edgeSet);
 }
+
 // Choose Algorithms Section
-var doneDrawing = document.getElementById("doneDrawing");
-var backToDrawing = document.getElementById("backToDrawing");
-var runAlgorithm = document.getElementById("runAlgorithm");
-var backToChooseAlgorithm = document.getElementById("backToChooseAlgorithm");
+const doneDrawing = document.getElementById("doneDrawing");
+const backToDrawing = document.getElementById("backToDrawing");
+const runAlgorithm = document.getElementById("runAlgorithm");
+const backToChooseAlgorithm = document.getElementById("backToChooseAlgorithm");
 var graph = null;
+
 doneDrawing.onclick = function() {
     var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("drawingToolbar");
@@ -531,6 +406,7 @@ doneDrawing.onclick = function() {
     x.style.display="block";
     y.style.display="none";
 }
+
 backToDrawing.onclick = function() {
     var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("drawingToolbar");
@@ -538,36 +414,50 @@ backToDrawing.onclick = function() {
     x.style.display="none";
     y.style.display="block";
 }
+
 runAlgorithm.onclick = function() {
     var y = document.getElementById("chooseAlgorithmToolbar");
     var algorithmChoosed = document.getElementById("chooseAlgorithm").value;
     console.log(algorithmChoosed);
     if (algorithmChoosed == "Breadth First Search") {
-
         document.getElementById("bfsToolbar").style.display="block";
         y.style.display="none";
+        document.getElementById("bfsBreakdown").style.display="block";
     } else {
         console.log("Please select an algorithm");
     }
-    
+
+    loadStartingNodeOptions();
 }
 
 // BFS Section
 backToChooseAlgorithm.onclick = function() {
     var x = document.getElementById("chooseAlgorithmToolbar");
     var y = document.getElementById("bfsToolbar");
+    var z = document.getElementById("bfsBreakdown");
     x.style.display="block";
     y.style.display="none";
+    z.style.display="none";
 }
 
+function loadStartingNodeOptions() {
+    console.log("loading node options");
+    var selectStartingNode = document.getElementById("chooseStartingNode");
+    var startingOptions = [];
+    for (let j = 0; j < nodeSet.size; j++) {
+        startingOptions.push(j);
+    }
+    while(selectStartingNode.options.length) {
+        selectStartingNode.options.remove(0);
+    }
+    
+    for (let i = 0; i < startingOptions.length; i++) {
+        let opt = startingOptions[i];
+        let el = document.createElement("option");
+        el.textContent = opt;
+        el.value = opt;
+        selectStartingNode.appendChild(el);
+    }
+}
 
 // Utility Functions
-
-// Convert edgeSet and nodeSet to Graph object
-// G.nodes --> Set of nodes
-// G.edges --> Set of edges
-// G.adj --> G.adj(0) --> Every node, node 0 is adjacent to 
-// G.degree --> length of G.adj 
-function convertToGraph(setOfEdges, setOfNodes) {
-
-}
